@@ -48,4 +48,14 @@ class MovieRepositoryImpl(
 
         return movies
     }
+
+    override suspend fun searchMovies(query: String): List<Movie> {
+        val response: MovieResponse = httpClient.get("search/movie") {
+            parameter("query", query)
+        }.body()
+
+        return response.results.map { 
+            Movie(it.id, it.title, it.posterPath, it.overview) 
+        }
+    }
 }

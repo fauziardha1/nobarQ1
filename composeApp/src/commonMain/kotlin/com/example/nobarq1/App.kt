@@ -1,19 +1,18 @@
 package com.example.nobarq1
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.example.nobarq1.core.designsystem.NobarTheme
 import com.example.nobarq1.features.home.ui.HomeScreen
+import com.example.nobarq1.features.search.ui.SearchScreen
 import com.example.nobarq1.features.splash.SplashScreen
 
 sealed class Screen {
     object Splash : Screen()
     object Home : Screen()
+    object Search : Screen()
 }
 
 @Composable
@@ -32,12 +31,14 @@ fun App() {
                     })
                 }
                 is Screen.Home -> {
-                    Scaffold(
-                        modifier = Modifier.safeContentPadding(),
-                        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background
-                    ) { innerPadding ->
-                        HomeScreen(modifier = Modifier.padding(innerPadding))
-                    }
+                    HomeScreen(
+                        onSearchClick = { currentScreen = Screen.Search }
+                    )
+                }
+                is Screen.Search -> {
+                    SearchScreen(
+                        onBack = { currentScreen = Screen.Home }
+                    )
                 }
             }
         }
