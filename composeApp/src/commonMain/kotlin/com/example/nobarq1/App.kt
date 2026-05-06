@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.nobarq1.core.designsystem.NobarTheme
 import com.example.nobarq1.features.auth.ui.LoginScreen
 import com.example.nobarq1.features.auth.ui.ProfileSelectionScreen
@@ -12,65 +16,84 @@ import com.example.nobarq1.features.home.ui.HomeScreen
 import com.example.nobarq1.features.liked.ui.LikedScreen
 import com.example.nobarq1.features.search.ui.SearchScreen
 import com.example.nobarq1.features.splash.SplashScreen
+import kotlinx.serialization.Serializable
 
-sealed class Screen {
-    object Splash : Screen()
-    object Login : Screen()
-    object ProfileSelection : Screen()
-    object Home : Screen()
-    object Search : Screen()
-    object Liked : Screen()
-    data class Detail(val movieId: Int) : Screen()
-}
+@Serializable
+object Splash
+
+@Serializable
+object Login
+
+@Serializable
+object Profile
+
+@Serializable
+object Home
+
+@Serializable
+object Search
+
+@Serializable
+object Liked
+
+@Serializable
+data class Detail(val movieId: Int)
 
 @Composable
 fun App() {
-    var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
+    val navController = rememberNavController()
 
     NobarTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = androidx.compose.material3.MaterialTheme.colorScheme.background
         ) {
-            when (val screen = currentScreen) {
-                is Screen.Splash -> {
+            NavHost(navController = navController, startDestination = Splash) {
+                composable<Splash> {
                     SplashScreen(onAnimationFinished = {
-                        currentScreen = Screen.Login
+                        navController.navigate(Login) {
+                            popUpTo<Splash> { inclusive = true }
+                        }
                     })
                 }
-                is Screen.Login -> {
+                composable<Login> {
                     LoginScreen(onLoginSuccess = {
-                        currentScreen = Screen.ProfileSelection
+                        navController.navigate(Profile) {
+                            popUpTo<Login> { inclusive = true }
+                        }
                     })
                 }
-                is Screen.ProfileSelection -> {
+                composable<Profile> {
                     ProfileSelectionScreen(onProfileSelected = {
-                        currentScreen = Screen.Home
+                        navController.navigate(Home) {
+                            popUpTo<Profile> { inclusive = true }
+                        }
                     })
                 }
-                is Screen.Home -> {
+                composable<Home> {
                     HomeScreen(
-                        onSearchClick = { currentScreen = Screen.Search },
-                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) },
-                        onLikedClick = { currentScreen = Screen.Liked }
+                        onSearchClick = { navController.navigate(Search) },
+                        onMovieClick = { movieId -> navController.navigate(Detail(movieId)) },
+                        onLikedClick = { navController.navigate(Liked) }
                     )
                 }
-                is Screen.Search -> {
+                composable<Search> {
                     SearchScreen(
-                        onBack = { currentScreen = Screen.Home },
-                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
+                        onBack = { navController.popBackStack() },
+                        onMovieClick = { movieId -> navController.navigate(Detail(movieId)) }
                     )
                 }
-                is Screen.Liked -> {
+                composable<Liked> {
                     LikedScreen(
-                        onBack = { currentScreen = Screen.Home },
-                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
+                        onBack = { navController.popBackStack() },
+                        onMovieClick = { movieId -> navController.navigate(Detail(movieId)) }
                     )
                 }
-                is Screen.Detail -> {
+                composable<Detail> { backStackEntry ->
+                    val detail: Detail = backStackEntry.toRoute()
                     DetailScreen(
-                        movieId = screen.movieId,
-                        onBack = { currentScreen = Screen.Home }
+                        movieId = detail.movieId,
+                        onBack = { navController.popBackStack() }
                     )
                 }
             }

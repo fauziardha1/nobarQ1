@@ -49,6 +49,9 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
+            // Navigation
+            implementation(libs.navigation.compose)
+
             // Networking
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
