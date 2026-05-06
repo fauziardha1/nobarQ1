@@ -9,19 +9,36 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.example.nobarq1.core.designsystem.NobarTheme
 import com.example.nobarq1.features.home.ui.HomeScreen
+import com.example.nobarq1.features.splash.SplashScreen
+
+sealed class Screen {
+    object Splash : Screen()
+    object Home : Screen()
+}
 
 @Composable
 fun App() {
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
+
     NobarTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = androidx.compose.material3.MaterialTheme.colorScheme.background
         ) {
-            Scaffold(
-                modifier = Modifier.safeContentPadding(),
-                containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background
-            ) { innerPadding ->
-                HomeScreen(modifier = Modifier.padding(innerPadding))
+            when (currentScreen) {
+                is Screen.Splash -> {
+                    SplashScreen(onAnimationFinished = {
+                        currentScreen = Screen.Home
+                    })
+                }
+                is Screen.Home -> {
+                    Scaffold(
+                        modifier = Modifier.safeContentPadding(),
+                        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background
+                    ) { innerPadding ->
+                        HomeScreen(modifier = Modifier.padding(innerPadding))
+                    }
+                }
             }
         }
     }
