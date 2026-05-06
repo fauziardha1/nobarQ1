@@ -83,4 +83,27 @@ class MovieRepositoryImpl(
             trailerKey = trailer?.key
         )
     }
+
+    override suspend fun isFavorite(movieId: Int): Boolean {
+        return database.nobarDatabaseQueries.isFavorite(movieId.toLong()).executeAsOne() > 0
+    }
+
+    override suspend fun toggleFavorite(movie: MovieDetail) {
+        if (isFavorite(movie.id)) {
+            database.nobarDatabaseQueries.deleteFavorite(movie.id.toLong())
+        } else {
+            database.nobarDatabaseQueries.insertFavorite(
+                id = movie.id.toLong(),
+                title = movie.title,
+                posterPath = movie.posterPath,
+                overview = movie.overview
+            )
+        }
+    }
+
+    override suspend fun getFavorites(): List<Movie> {
+        return database.nobarDatabaseQueries.getAllFavorites().executeAsList().map {
+            Movie(it.id.toInt(), it.title, it.posterPath, it.overview)
+        }
+    }
 }

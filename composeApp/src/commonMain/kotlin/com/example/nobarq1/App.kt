@@ -9,6 +9,7 @@ import com.example.nobarq1.features.auth.ui.LoginScreen
 import com.example.nobarq1.features.auth.ui.ProfileSelectionScreen
 import com.example.nobarq1.features.detail.ui.DetailScreen
 import com.example.nobarq1.features.home.ui.HomeScreen
+import com.example.nobarq1.features.liked.ui.LikedScreen
 import com.example.nobarq1.features.search.ui.SearchScreen
 import com.example.nobarq1.features.splash.SplashScreen
 
@@ -18,6 +19,7 @@ sealed class Screen {
     object ProfileSelection : Screen()
     object Home : Screen()
     object Search : Screen()
+    object Liked : Screen()
     data class Detail(val movieId: Int) : Screen()
 }
 
@@ -49,11 +51,18 @@ fun App() {
                 is Screen.Home -> {
                     HomeScreen(
                         onSearchClick = { currentScreen = Screen.Search },
-                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
+                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) },
+                        onLikedClick = { currentScreen = Screen.Liked }
                     )
                 }
                 is Screen.Search -> {
                     SearchScreen(
+                        onBack = { currentScreen = Screen.Home },
+                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
+                    )
+                }
+                is Screen.Liked -> {
+                    LikedScreen(
                         onBack = { currentScreen = Screen.Home },
                         onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
                     )

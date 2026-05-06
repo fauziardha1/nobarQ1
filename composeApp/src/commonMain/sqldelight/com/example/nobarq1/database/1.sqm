@@ -1,0 +1,6 @@
+CREATE TABLE FavoriteMovie (
+    id INTEGER PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    posterPath TEXT,
+    overview TEXT NOT NULL
+);

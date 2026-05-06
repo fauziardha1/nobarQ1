@@ -6,6 +6,13 @@ CREATE TABLE MovieEntity (
     overview TEXT NOT NULL
 );
 
+CREATE TABLE FavoriteMovie (
+    id INTEGER PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    posterPath TEXT,
+    overview TEXT NOT NULL
+);
+
 insertMovie:
 INSERT OR REPLACE INTO MovieEntity(id, title, posterPath, genreId, overview)
 VALUES (?, ?, ?, ?, ?);
@@ -15,3 +22,16 @@ SELECT * FROM MovieEntity WHERE genreId = ?;
 
 clearMovies:
 DELETE FROM MovieEntity;
+
+insertFavorite:
+INSERT OR REPLACE INTO FavoriteMovie(id, title, posterPath, overview)
+VALUES (?, ?, ?, ?);
+
+deleteFavorite:
+DELETE FROM FavoriteMovie WHERE id = ?;
+
+getAllFavorites:
+SELECT * FROM FavoriteMovie;
+
+isFavorite:
+SELECT count(*) FROM FavoriteMovie WHERE id = ?;

@@ -22,15 +22,26 @@ class DetailViewModel(
     private val _state = MutableStateFlow<DetailState>(DetailState.Loading)
     val state: StateFlow<DetailState> = _state.asStateFlow()
 
+    private val _isFavorite = MutableStateFlow(false)
+    val isFavorite: StateFlow<Boolean> = _isFavorite.asStateFlow()
+
     fun loadMovieDetail(movieId: Int) {
         viewModelScope.launch {
             try {
                 _state.value = DetailState.Loading
                 val detail = repository.getMovieDetail(movieId)
+                _isFavorite.value = repository.isFavorite(movieId)
                 _state.value = DetailState.Success(detail)
             } catch (e: Exception) {
                 _state.value = DetailState.Error(e.message ?: "Unknown error")
             }
+        }
+    }
+
+    fun toggleFavorite(movie: MovieDetail) {
+        viewModelScope.launch {
+            repository.toggleFavorite(movie)
+            _isFavorite.value = repository.isFavorite(movie.id)
         }
     }
 }

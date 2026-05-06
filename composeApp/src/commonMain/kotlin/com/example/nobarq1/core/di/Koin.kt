@@ -10,6 +10,7 @@ import com.example.nobarq1.features.detail.ui.DetailViewModel
 import com.example.nobarq1.features.home.data.MovieRepository
 import com.example.nobarq1.features.home.data.MovieRepositoryImpl
 import com.example.nobarq1.features.home.ui.HomeViewModel
+import com.example.nobarq1.features.liked.ui.LikedViewModel
 import com.example.nobarq1.features.search.ui.SearchViewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -27,6 +28,7 @@ val viewModelModule = module {
     viewModel { DetailViewModel(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
+    viewModel { LikedViewModel(get()) }
 }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) =

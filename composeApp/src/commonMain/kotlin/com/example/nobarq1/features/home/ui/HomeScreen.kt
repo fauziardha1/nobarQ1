@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,6 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreen(
     onSearchClick: () -> Unit,
     onMovieClick: (Int) -> Unit,
+    onLikedClick: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -38,6 +40,9 @@ fun HomeScreen(
                     )
                 },
                 actions = {
+                    IconButton(onClick = onLikedClick) {
+                        Icon(  Icons.Default.Favorite, contentDescription = "Liked")
+                    }
                     IconButton(onClick = onSearchClick) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }

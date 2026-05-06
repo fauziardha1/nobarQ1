@@ -6,6 +6,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -32,6 +34,7 @@ fun DetailScreen(
     viewModel: DetailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val isFavorite by viewModel.isFavorite.collectAsState()
     val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(movieId) {
@@ -66,6 +69,8 @@ fun DetailScreen(
                 is DetailState.Success -> {
                     DetailContent(
                         movie = detailState.movie,
+                        isFavorite = isFavorite,
+                        onToggleFavorite = { viewModel.toggleFavorite(detailState.movie) },
                         onPlayTrailer = { key ->
                             uriHandler.openUri("https://www.youtube.com/watch?v=$key")
                         }
@@ -86,6 +91,8 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     movie: MovieDetail,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
     onPlayTrailer: (String) -> Unit
 ) {
     Column(
@@ -113,12 +120,21 @@ fun DetailContent(
         }
 
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = movie.title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    text = movie.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                IconButton(onClick = onToggleFavorite) {
+                    Icon(
+                        if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) NetflixRed else Color.White
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
