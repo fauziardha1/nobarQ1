@@ -1,0 +1,17 @@
+CREATE TABLE MovieEntity (
+    id INTEGER PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    posterPath TEXT,
+    genreId INTEGER NOT NULL,
+    overview TEXT NOT NULL
+);
+
+insertMovie:
+INSERT OR REPLACE INTO MovieEntity(id, title, posterPath, genreId, overview)
+VALUES (?, ?, ?, ?, ?);
+
+getMoviesByGenre:
+SELECT * FROM MovieEntity WHERE genreId = ?;
+
+clearMovies:
+DELETE FROM MovieEntity;
