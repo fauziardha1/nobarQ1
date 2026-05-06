@@ -20,6 +20,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SearchScreen(
     onBack: () -> Unit,
+    onMovieClick: (Int) -> Unit,
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val query by viewModel.query.collectAsState()
@@ -84,7 +85,7 @@ fun SearchScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(searchState.movies) { movie ->
-                                MovieCard(movie)
+                                MovieCard(movie, onMovieClick)
                             }
                         }
                     }

@@ -5,6 +5,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.example.nobarq1.core.designsystem.NobarTheme
+import com.example.nobarq1.features.detail.ui.DetailScreen
 import com.example.nobarq1.features.home.ui.HomeScreen
 import com.example.nobarq1.features.search.ui.SearchScreen
 import com.example.nobarq1.features.splash.SplashScreen
@@ -13,6 +14,7 @@ sealed class Screen {
     object Splash : Screen()
     object Home : Screen()
     object Search : Screen()
+    data class Detail(val movieId: Int) : Screen()
 }
 
 @Composable
@@ -24,7 +26,7 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = androidx.compose.material3.MaterialTheme.colorScheme.background
         ) {
-            when (currentScreen) {
+            when (val screen = currentScreen) {
                 is Screen.Splash -> {
                     SplashScreen(onAnimationFinished = {
                         currentScreen = Screen.Home
@@ -32,11 +34,19 @@ fun App() {
                 }
                 is Screen.Home -> {
                     HomeScreen(
-                        onSearchClick = { currentScreen = Screen.Search }
+                        onSearchClick = { currentScreen = Screen.Search },
+                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
                     )
                 }
                 is Screen.Search -> {
                     SearchScreen(
+                        onBack = { currentScreen = Screen.Home },
+                        onMovieClick = { movieId -> currentScreen = Screen.Detail(movieId) }
+                    )
+                }
+                is Screen.Detail -> {
+                    DetailScreen(
+                        movieId = screen.movieId,
                         onBack = { currentScreen = Screen.Home }
                     )
                 }

@@ -1,5 +1,6 @@
 package com.example.nobarq1.features.home.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,6 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreen(
     onSearchClick: () -> Unit,
+    onMovieClick: (Int) -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -58,7 +60,7 @@ fun HomeScreen(
                         contentPadding = PaddingValues(bottom = 16.dp)
                     ) {
                         items(homeState.categories) { category ->
-                            CategoryRow(category)
+                            CategoryRow(category, onMovieClick)
                         }
                     }
                 }
@@ -75,7 +77,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun CategoryRow(category: GenreMovies) {
+fun CategoryRow(
+    category: GenreMovies,
+    onMovieClick: (Int) -> Unit
+) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Text(
             text = category.genre.name,
@@ -88,16 +93,22 @@ fun CategoryRow(category: GenreMovies) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(category.movies) { movie ->
-                MovieCard(movie)
+                MovieCard(movie, onMovieClick)
             }
         }
     }
 }
 
 @Composable
-fun MovieCard(movie: Movie) {
+fun MovieCard(
+    movie: Movie,
+    onMovieClick: (Int) -> Unit
+) {
     Card(
-        modifier = Modifier.width(120.dp).height(180.dp),
+        modifier = Modifier
+            .width(120.dp)
+            .height(180.dp)
+            .clickable { onMovieClick(movie.id) },
         shape = MaterialTheme.shapes.medium
     ) {
         AsyncImage(

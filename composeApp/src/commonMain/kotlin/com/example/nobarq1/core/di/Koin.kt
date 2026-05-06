@@ -2,6 +2,7 @@ package com.example.nobarq1.core.di
 
 import com.example.nobarq1.core.database.databaseModule
 import com.example.nobarq1.core.network.networkModule
+import com.example.nobarq1.features.detail.ui.DetailViewModel
 import com.example.nobarq1.features.home.data.MovieRepository
 import com.example.nobarq1.features.home.data.MovieRepositoryImpl
 import com.example.nobarq1.features.home.ui.HomeViewModel
@@ -18,6 +19,7 @@ val repositoryModule = module {
 val viewModelModule = module {
     viewModel { HomeViewModel(get()) }
     viewModel { SearchViewModel(get()) }
+    viewModel { DetailViewModel(get()) }
 }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
